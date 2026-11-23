@@ -65,3 +65,38 @@ notebooks/           Exploratory notebooks
 figures/             Generated figures (not tracked)
 audio/               Generated audio files (not tracked)
 ```
+
+## Conventions
+
+### Branches
+
+- `main`: approved version only. Updated by merging `develop` at each checkpoint.
+- `develop`: shared working branch. Nobody commits on it directly.
+- Feature branches: one per task, created from `develop`, named
+  `feature/<short-name>` (for example `feature/plots`, `feature/audio-mapping`).
+  Delete them once merged.
+
+### Workflow
+
+1. `git switch develop && git pull`, then `git switch -c feature/<short-name>`.
+2. Commit small steps with a clear message saying what changed
+   (for example `Add readout noise model`), not `Add files via upload`.
+3. Run `pytest` locally: all tests must pass.
+4. Push the branch and open a pull request towards `develop`.
+5. The review partner reads and approves it (Morgane <-> Maïa, Romain <-> Raphael),
+   then the author merges.
+
+Please do not upload files through the GitHub web interface: it skips the
+tests and the review.
+
+### Code
+
+- Library code goes in `src/quantum_music/` and is imported as
+  `from quantum_music.<module> import ...` (never `from theory import ...`).
+- Library modules must not depend on Jupyter (`IPython`, `ipywidgets`): they are
+  also used by the scripts, the tests and the app.
+- Every new dependency goes into `requirements.txt`.
+- Each module has its tests in `tests/test_<module>.py`.
+- Plotting functions live in `plots.py`: they take already computed data,
+  return the matplotlib object and never call `plt.show()`.
+- Scripts and experiments fix their random seed so that figures are reproducible.
