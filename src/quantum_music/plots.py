@@ -1,8 +1,8 @@
-"""Fonctions de figures communes à toute l'équipe.
+"""Plotting functions shared by the whole team.
 
-Règle : chaque fonction reçoit des données déjà calculées et ne fait que dessiner.
-Elle renvoie l'objet matplotlib et n'appelle jamais ``plt.show()``, pour pouvoir
-être utilisée dans les notebooks, les scripts et l'app.
+Rule: each function receives data that is already computed and only draws it.
+It returns the matplotlib object and never calls ``plt.show()``, so it can be
+used from notebooks, scripts and the app.
 """
 
 from pathlib import Path
@@ -15,10 +15,10 @@ from quantum_music.theory import wilson_interval
 
 
 def plot_counts(counts, theory, title="", ax=None):
-    """Histogramme des fréquences mesurées, barres d'erreur de Wilson (95 %) et valeur théorique.
+    """Histogram of measured frequencies with Wilson error bars (95 %) and theoretical values.
 
-    counts : {bitstring: nombre d'occurrences}, par exemple {"00": 503, "11": 497}
-    theory : {bitstring: probabilité théorique}, toutes les issues possibles
+    counts : {bitstring: number of occurrences}, for example {"00": 503, "11": 497}
+    theory : {bitstring: theoretical probability}, for every possible outcome
     """
     if ax is None:
         _, ax = plt.subplots(figsize=(6, 3.5))
@@ -31,25 +31,25 @@ def plot_counts(counts, theory, title="", ax=None):
     yerr = np.clip(np.vstack([freq - ci[:, 0], ci[:, 1] - freq]), 0, None)
     x = np.arange(len(keys))
     ax.bar(x, freq, yerr=yerr, capsize=5, alpha=0.7,
-           label=f"mesure, {n} shots (IC Wilson 95 %)")
+           label=f"measured, {n} shots (Wilson 95 % CI)")
     ax.scatter(x, [theory[key] for key in keys], marker="_", s=900, color="black",
-               linewidths=2, label="théorie", zorder=3)
-    # Valeurs écrites au-dessus de chaque barre : nombre de shots, % mesuré, % théorique
+               linewidths=2, label="theory", zorder=3)
+    # Values written above each bar: number of shots, measured %, theoretical %
     for xi, ki, fi, hi, key in zip(x, k, freq, ci[:, 1], keys):
         ax.text(xi, max(hi, theory[key]) + 0.03,
-                f"{ki} / {n}\n{fi:.1%}  (théorie {theory[key]:.0%})",
+                f"{ki} / {n}\n{fi:.1%}  (theory {theory[key]:.0%})",
                 ha="center", va="bottom", fontsize=8)
     ax.set_xticks(x)
     ax.set_xticklabels([f"{key}\n{notes[key]}" for key in keys])
     ax.set_ylim(0, 1)
-    ax.set_ylabel("fréquence")
+    ax.set_ylabel("frequency")
     ax.set_title(title)
     ax.legend(loc="upper left", fontsize=8, markerscale=0.4)
     return ax
 
 
 def save_fig(fig, path, dpi=150):
-    """Enregistre une figure (crée le dossier si besoin) et la ferme."""
+    """Save a figure (creating the folder if needed) and close it."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     fig.tight_layout()

@@ -1,8 +1,8 @@
-"""Tests des fonctions de figures. Lancer avec : pytest"""
+"""Tests for the plotting functions. Run with: pytest"""
 
 import matplotlib
 
-matplotlib.use("Agg")  # pas de fenêtre graphique pendant les tests
+matplotlib.use("Agg")  # no graphical window during tests
 
 from quantum_music.circuits import THEORY
 from quantum_music.plots import plot_counts, save_fig
@@ -16,7 +16,7 @@ def test_hadamard_histogram_has_two_bars_and_notes():
 
 
 def test_bell_histogram_accepts_missing_outcomes():
-    # Sans bruit, le simulateur ne renvoie pas les issues jamais observées (01, 10).
+    # Without noise, the simulator does not return outcomes that never occur (01, 10).
     ax = plot_counts({"00": 503, "11": 497}, THEORY["bell"])
     assert len(ax.patches) == 4
     assert ax.patches[1].get_height() == 0

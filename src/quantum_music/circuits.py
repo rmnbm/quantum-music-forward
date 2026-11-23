@@ -38,7 +38,7 @@ def build_bell(measure=True):
 
 def show_circuit(qc):
     """Dessine le circuit (matplotlib si possible, sinon texte)."""
-    # Import local : IPython n'existe que dans Jupyter, pas dans l'app ni les tests.
+    # Local import: IPython only exists in Jupyter, not in the app or the tests.
     from IPython.display import display
 
     try:
