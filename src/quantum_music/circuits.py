@@ -6,8 +6,6 @@ from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 from qiskit.quantum_info import Statevector
 
-from IPython.display import display
-
 SIMULATOR = AerSimulator()
 
 # Mapping bitstring -> note (slides du kickoff)
@@ -40,6 +38,9 @@ def build_bell(measure=True):
 
 def show_circuit(qc):
     """Dessine le circuit (matplotlib si possible, sinon texte)."""
+    # Import local : IPython n'existe que dans Jupyter, pas dans l'app ni les tests.
+    from IPython.display import display
+
     try:
         fig = qc.draw("mpl")
         display(fig)
