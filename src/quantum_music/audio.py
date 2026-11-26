@@ -6,7 +6,10 @@ samples in [-1, 1] at ``SAMPLE_RATE``. Functions return arrays and never
 play sound, so they can be used from scripts, tests and the app.
 """
 
+from pathlib import Path
+
 import numpy as np
+from scipy.io import wavfile
 
 from quantum_music.circuits import NOTES
 
@@ -74,3 +77,20 @@ def samples_to_audio(samples, note_duration=0.25, sr=SAMPLE_RATE):
         freq = NOTE_FREQS[name]
         notes.append(synth_note(freq, duration=note_duration, sr=sr))
     return np.concatenate(notes)
+
+
+def save_wav(signal, path, sr=SAMPLE_RATE):
+    """Write a signal to a 16-bit WAV file.
+
+    signal : 1-D numpy array of samples in [-1, 1]; values outside are clipped
+    path   : output file path (parent folders are created if needed)
+    sr     : sample rate in samples per second
+    Returns the path as a pathlib.Path.
+    """
+
+    clipped_signal = np.clip(signal, -1, 1)
+    converted_signal = (clipped_signal * 32767).astype(np.int16)
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    wavfile.write(path, sr, converted_signal)
+    return path
