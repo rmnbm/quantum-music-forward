@@ -1,10 +1,7 @@
-"""Name 2 : modèles de bruit (Maïa).
-
-Idée générale
--------------
+"""
 Le circuit ne change pas : c'est la *machine* qui devient imparfaite.
 On décrit ses défauts dans un ``NoiseModel`` de Qiskit Aer, puis on lance
-le même circuit (celui de Morgane) sur ce simulateur bruité.
+le même circuit sur ce simulateur bruité.
 
 Quatre bruits sont étudiés :
 
@@ -71,7 +68,7 @@ def _check_strengths(strengths):
 
 
 def state_errors(kind, p):
-    """Erreurs (1 qubit, 2 qubits) pour un bruit d'état de force ``p``."""
+    """prépare les erreurs sur les qubits, erreurs 1,2,3, pas l'erreur de lecture"""
     if kind == "depolarizing":
         return depolarizing_error(p, 1), depolarizing_error(p, 2)
     if kind == "amplitude_damping":
@@ -85,7 +82,7 @@ def state_errors(kind, p):
 
 
 def readout_matrix(p):
-    """Matrice de lecture d'un qubit : ligne = vrai état, colonne = bit lu.
+    """Prépare l'erreur de lecture, matrice de lecture d'un qubit : ligne = vrai état, colonne = bit lu.
 
     ``p`` peut être un nombre (erreur symétrique) ou un couple
     ``(p01, p10)`` avec p01 = P(lire 1 | vrai 0) et p10 = P(lire 0 | vrai 1).
@@ -111,13 +108,13 @@ def _gate_errors(strengths):
 
 
 def make_noise_model(**strengths):
-    """Crée le modèle de bruit Qiskit Aer.
+    """La principale : fabrique la machine déréglée (par exemple make_noise_model(readout=0.1) pour 10 % d’erreur de lecture)
 
     Exemples ::
 
-        make_noise_model(depolarizing=0.05)              # un seul bruit
-        make_noise_model(phase_damping=0.1, readout=0.02)  # plusieurs bruits
-        make_noise_model(readout=(0.01, 0.03))           # lecture asymétrique
+        make_noise_model(depolarizing=0.05)              # erreur de dépolarisant
+        make_noise_model(phase_damping=0.1, readout=0.02)  # amortissement de phase et erreur de lecture
+        make_noise_model(readout=(0.01, 0.03))           # erreur de lecture
     """
     _check_strengths(strengths)
     model = NoiseModel(basis_gates=BASIS_GATES)
